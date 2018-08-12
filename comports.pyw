@@ -32,8 +32,11 @@ def main():
         if sel:
             com_port = comports[sel[0]].device
             baud_rate = baud_rate_combobox.get()
-            print('putty -serial ' + com_port + ' -sercfg ' + baud_rate + ',8,n,1,N')
-            subprocess.Popen(['putty', '-serial', com_port, '-sercfg', baud_rate + ',8,n,1,N'])
+            cmd = ['putty', '-serial', com_port, '-sercfg', baud_rate + ',8,n,1,N']
+
+            print(' '.join(cmd))
+            subprocess.Popen(cmd)
+
         top.destroy()
 
     def cancel(event=None):
