@@ -8,6 +8,7 @@ _cache = None
 
 
 def _norm(value, do=True):
+    value = value or 0
     if (not do) or isinstance(value, int):
         return value
     return int(value, 16)
@@ -34,10 +35,10 @@ def get(vendor_id, product_id=None):
     global _cache
     if not _cache:
         _cache = parse_ids_file()
-    vendor = _cache.get(_norm(vendor_id), (None, {}))
-    if not product_id:
+    vendor = _cache.get(_norm(vendor_id), ('', {}))
+    if product_id is None:
         return vendor[0]
-    return (vendor[0], vendor[1].get(_norm(product_id)))
+    return (vendor[0], vendor[1].get(_norm(product_id), ''))
 
 
 def main():
