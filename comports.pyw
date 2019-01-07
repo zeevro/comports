@@ -14,7 +14,7 @@ def main():
     ports_listbox.pack(fill=tkinter.BOTH, expand=1)
     
     for i in comports:
-        ports_listbox.insert(tkinter.END, '%s: %s [%s %s]' % (i.device, i.description, *usb_ids.get(i.vid, i.pid)))
+        ports_listbox.insert(tkinter.END, '%s: %s [%s %s]' % (i.device, i.description, *usb_ids.get(i.vid or 0, i.pid or 0)))
 
     ports_listbox.select_set(0, 0)
 
