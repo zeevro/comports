@@ -21,7 +21,7 @@ def main():
     baud_rate_combobox = tkinter.ttk.Combobox(top)
     baud_rate_combobox.pack(side=tkinter.LEFT)
     
-    baud_rate_combobox['values'] = ['115200', '9600']
+    baud_rate_combobox['values'] = list(map(str, (110, 300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200, 128000, 256000)))
     baud_rate_combobox.set('115200')
 
     ports_listbox.focus()
