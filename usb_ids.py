@@ -22,7 +22,7 @@ def get_ids_file_date(filename=DEFAULT_PATH):
                 return datetime.strptime(m[0], '%Y-%m-%d %H:%M:%S')
 
 
-def auto_update(filename=DEFAULT_PATH):
+def auto_update_ids_file(filename=DEFAULT_PATH):
     file_date = get_ids_file_date(filename)
     req = request.urlopen('http://www.linux-usb.org/usb.ids')
 
@@ -49,7 +49,7 @@ def _norm(value, do=True):
 def parse_ids_file(filename=DEFAULT_PATH, normalize=True, auto_update=True):
     if auto_update:
         try:
-            auto_update(filename)
+            auto_update_ids_file(filename)
         except Exception:
             pass
 
