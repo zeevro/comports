@@ -72,7 +72,7 @@ def parse_ids_file(filename=DEFAULT_PATH, normalize=True, auto_update=True):
 def get(vendor_id, product_id=None, auto_update=True):
     global _cache
     if not _cache:
-        _cache = parse_ids_file(auto_update)
+        _cache = parse_ids_file(auto_update=auto_update)
     vendor = _cache.get(_norm(vendor_id), ('', {}))
     if product_id is None:
         return vendor[0]
