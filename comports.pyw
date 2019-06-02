@@ -12,7 +12,7 @@ def main():
 
     ports_listbox = tkinter.Listbox(top, width=150, height=15, exportselection=False)
     ports_listbox.pack(fill=tkinter.BOTH, expand=1)
-    
+
     for i in comports:
         ports_listbox.insert(tkinter.END, '%s: %s [%s %s]' % (i.device, i.description, *usb_ids.get(i.vid or 0, i.pid or 0)))
 
@@ -20,7 +20,7 @@ def main():
 
     baud_rate_combobox = tkinter.ttk.Combobox(top)
     baud_rate_combobox.pack(side=tkinter.LEFT)
-    
+
     baud_rate_combobox['values'] = list(map(str, (110, 300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200, 128000, 256000)))
     baud_rate_combobox.set('115200')
 
