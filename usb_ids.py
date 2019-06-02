@@ -1,10 +1,42 @@
 import os
 import re
+import locale
+import shutil
+from datetime import datetime
+from urllib import request
 
 
 DEFAULT_PATH = os.path.join(os.path.dirname(__file__), 'usb.ids')
+DATE_PAT = re.compile(r'^# Date\: +(\d{4}\-\d{2}\-\d{2} \d{2}\:\d{2}\:\d{2})$')
 PAT = re.compile(r'^(?:(?P<vendor_id>[\da-f]{4})|\t(?P<product_id>[\da-f]{4}))  (?P<name>.+)$')
 _cache = None
+
+
+def get_ids_file_date(filename=DEFAULT_PATH):
+    if not os.path.isfile(filename):
+        return None
+    with open(filename) as in_f:
+        for line in in_f:
+            m = DATE_PAT.findall(line)
+            if m:
+                return datetime.strptime(m[0], '%Y-%m-%d %H:%M:%S')
+
+
+def auto_update(filename=DEFAULT_PATH):
+    file_date = get_ids_file_date(filename)
+    req = request.urlopen('http://www.linux-usb.org/usb.ids')
+
+    if file_date is not None:
+        locale.setlocale(locale.LC_TIME, 'C')
+        update_date = datetime.strptime(req.headers['Last-Modified'], '%a, %d %b %Y %H:%M:%S %Z')
+
+        if file_date >= update_date:
+            return False
+
+    with open(filename, 'wb') as f:
+        shutil.copyfileobj(req, f)
+
+    return True
 
 
 def _norm(value, do=True):
@@ -14,12 +46,18 @@ def _norm(value, do=True):
     return int(value, 16)
 
 
-def parse_ids_file(filename=DEFAULT_PATH, normalize=True):
+def parse_ids_file(filename=DEFAULT_PATH, normalize=True, auto_update=True):
+    if auto_update:
+        try:
+            auto_update(filename)
+        except Exception:
+            pass
+
     ret = {}
     vendor_id = None
     with open(filename) as in_f:
         for line in in_f:
-            match = re.match(PAT, line)
+            match = PAT.match(line)
             if not match:
                 continue
             d = match.groupdict()
@@ -31,10 +69,10 @@ def parse_ids_file(filename=DEFAULT_PATH, normalize=True):
     return ret
 
 
-def get(vendor_id, product_id=None):
+def get(vendor_id, product_id=None, auto_update=True):
     global _cache
     if not _cache:
-        _cache = parse_ids_file()
+        _cache = parse_ids_file(auto_update)
     vendor = _cache.get(_norm(vendor_id), ('', {}))
     if product_id is None:
         return vendor[0]
