@@ -44,7 +44,7 @@ def main():
 
                 print(' '.join(cmd))
                 Popen(cmd)
-        except Exception as e:
+        except Exception:
             showerror('Error opening PuTTY!', traceback.format_exc())
 
         top.destroy()
