@@ -81,10 +81,17 @@ def get(vendor_id, product_id=None, auto_update=True):
 
 def main():
     import json
-    print(json.dumps(parse_ids_file(normalize=False),
-                     separators=(',', ': '),
-                     indent=4,
-                     sort_keys=True))
+    import sys
+    args = [int(x, 0) for x in sys.argv[1:]]
+    if len(args) >= 2:
+        print(' : '.join(get(*args)))
+    elif len(args) >= 1:
+        print(get(*args))
+    else:
+        print(json.dumps(parse_ids_file(normalize=False),
+                         separators=(',', ': '),
+                         indent=2,
+                         sort_keys=True))
 
 
 if __name__ == '__main__':
